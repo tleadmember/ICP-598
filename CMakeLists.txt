@@ -13,10 +13,10 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O3")
 
 include_directories(include/)
 
-add_library(icp SHARED src/icp.cpp) # libicp.so
+add_library(matcher SHARED src/matcher.cpp) # libmatcher.so
 
 # find_library()
 
 add_executable(main src/main.cpp)
 
-target_link_libraries(main icp)
+target_link_libraries(main matcher)

@@ -1,11 +1,11 @@
-#include "icp.h"
+#include "matcher.h"
 #include <iostream>
 #include <cmath>
 #include <random>
 
 
 int main() {
-    int num_points = 2000; // determine how many 3d points
+    int num_points = 5; // determine how many 3d points
 
     Eigen::MatrixXd set_original(3,num_points);         // original set of points
     Eigen::MatrixXd set_original_aug(4,num_points);     // augmented matrix of original set
@@ -62,8 +62,13 @@ int main() {
     set_moved = set_moved_aug.block(0, 0, 3, num_points);
     // std::cout << "Moved matrix: \n" << set_moved << '\n' << '\n';
 
+    // Initialize an object of Matcher class
+    Matcher matcher{set_original, set_moved};
+
+    matcher.print_sets();
+
     // Calling iterative closest point function
-    Eigen::Matrix<double, 3, 3> R = icp(set_original, set_moved);
+    Eigen::Matrix<double, 3, 3> R = matcher.icp();
     std::cout << "Calculated rotation matrix: \n" << R << '\n' << '\n';
     Eigen::Quaterniond quaternion2(R);
     std::cout << "Calculated quaternion of rotation: \n" << quaternion2.coeffs().transpose() << '\n' << '\n';
