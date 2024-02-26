@@ -5,7 +5,7 @@
 
 
 int main() {
-    int num_points = 5; // determine how many 3d points
+    int num_points = 8; // determine how many 3d points
 
     Eigen::MatrixXd set_original(3,num_points);         // original set of points
     Eigen::MatrixXd set_original_aug(4,num_points);     // augmented matrix of original set
@@ -67,12 +67,23 @@ int main() {
 
     matcher.print_sets();
 
-    // Calling iterative closest point function
-    Eigen::Matrix<double, 3, 3> R = matcher.icp();
-    std::cout << "Calculated rotation matrix: \n" << R << '\n' << '\n';
-    Eigen::Quaterniond quaternion2(R);
-    std::cout << "Calculated quaternion of rotation: \n" << quaternion2.coeffs().transpose() << '\n' << '\n';
-    std::cout << "Determinant of rotation transformation: \n" << R.determinant() << '\n' << '\n';
+    /* 8-point algorithm */
+    // Calculate matrix A for linearization
+    matcher.calc_A();
+    // Check if columns of A are linearly independent
+    Eigen::Matrix<double, 8, 9> matrix_A = matcher.matrix_A();
+    // std::cout << "Matrix A: \n" << matrix_A << '\n' << '\n';
+    // std::cout << "A_transpose: \n" << matrix_A.transpose() << '\n' << '\n';
+    Eigen::Matrix<double, 9, 9> AT_A = matrix_A.transpose() * matrix_A;
+    // std::cout << "A_transpose*A: \n" << AT_A << '\n' << '\n';
+    Eigen::Matrix<double, 9, 9> _2_AT_A = 2*AT_A;
+    std::cout << "2*A_transpose*A: \n" << _2_AT_A << '\n' << '\n';
+    Eigen::EigenSolver<Eigen::MatrixXd> eigen_solver(_2_AT_A);
+    Eigen::VectorXd eigen_values = eigen_solver.eigenvalues().real(); // AT_A is symmetric so all its eigenvalues are real
+    std::cout << "Eigenvalues of 2*AT*A: \n" << eigen_values << '\n' << '\n';
+
+    double smallest_eigvalue = eigen_values.minCoeff();
+    std::cout << "Smallest eigenvalue of AT*A: " << smallest_eigvalue << '\n' << '\n';
 
     return 0;
 }
