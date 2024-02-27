@@ -6,7 +6,8 @@ if(NOT CMAKE_BUILD_TYPE) # Set build type if not set
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror") # Set additional flags
+# set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror") # Set additional flags
+set(CMAKE_CXX_FLAGS "-Wextra -Werror") # Set additional flags
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O3")
 
 # find_path()

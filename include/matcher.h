@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
+#include <Eigen/SVD>
 
 class Matcher {
 public:
@@ -16,9 +17,8 @@ public:
 
   // Other functions
   void                          print_sets() const;
-  Eigen::Matrix<double, 3, 3>   icp() const;
-  Eigen::MatrixXd               nearest_neighbor() const;
-  Eigen::Matrix<double, 3, 3>   kabsch_umeyama(const Eigen::MatrixXd&) const;
+  void                          eight_pt();
+  Eigen::Matrix3d               normalize_matrix(const Eigen::MatrixXd&) const;
   void                          calc_A();
 
 private:

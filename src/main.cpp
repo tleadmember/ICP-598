@@ -64,26 +64,43 @@ int main() {
 
     // Initialize an object of Matcher class
     Matcher matcher{set_original, set_moved};
-
     matcher.print_sets();
 
     /* 8-point algorithm */
     // Calculate matrix A for linearization
     matcher.calc_A();
+    matcher.eight_pt();
     // Check if columns of A are linearly independent
-    Eigen::Matrix<double, 8, 9> matrix_A = matcher.matrix_A();
+    // Eigen::Matrix<double, 8, 9> matrix_A = matcher.matrix_A();
     // std::cout << "Matrix A: \n" << matrix_A << '\n' << '\n';
     // std::cout << "A_transpose: \n" << matrix_A.transpose() << '\n' << '\n';
-    Eigen::Matrix<double, 9, 9> AT_A = matrix_A.transpose() * matrix_A;
+    // Eigen::Matrix<double, 9, 9> AT_A = matrix_A.transpose() * matrix_A;
     // std::cout << "A_transpose*A: \n" << AT_A << '\n' << '\n';
-    Eigen::Matrix<double, 9, 9> _2_AT_A = 2*AT_A;
-    std::cout << "2*A_transpose*A: \n" << _2_AT_A << '\n' << '\n';
-    Eigen::EigenSolver<Eigen::MatrixXd> eigen_solver(_2_AT_A);
-    Eigen::VectorXd eigen_values = eigen_solver.eigenvalues().real(); // AT_A is symmetric so all its eigenvalues are real
-    std::cout << "Eigenvalues of 2*AT*A: \n" << eigen_values << '\n' << '\n';
 
-    double smallest_eigvalue = eigen_values.minCoeff();
-    std::cout << "Smallest eigenvalue of AT*A: " << smallest_eigvalue << '\n' << '\n';
+    // Eigen::Matrix<double, 9, 9> _2_AT_A = 2*AT_A;
+    // std::cout << "2*A_transpose*A: \n" << _2_AT_A << '\n' << '\n';
+    // Eigen::EigenSolver<Eigen::MatrixXd> eigen_solver(_2_AT_A);
+    // Eigen::VectorXd eigen_values = eigen_solver.eigenvalues().real(); // AT_A is symmetric so all its eigenvalues are real
+    // std::cout << "Eigenvalues of 2*AT*A: \n" << eigen_values << '\n' << '\n';
+    // double smallest_eigvalue = eigen_values.minCoeff();
+    // std::cout << "Smallest eigenvalue of AT*A: " << smallest_eigvalue << '\n' << '\n';
+
+    // Get rank of A
+    // Eigen::JacobiSVD<Eigen::MatrixXd> svd_A(matrix_A, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    // auto rank_A = svd_A.rank();
+    // std::cout << "Rank of A: " << rank_A << '\n' << '\n';
+
+    // // Get rank of AT_A
+    // Eigen::JacobiSVD<Eigen::MatrixXd> svd_ATA(AT_A, Eigen::ComputeFullU | Eigen::ComputeFullV);
+    // auto rank_ATA = svd_ATA.rank();
+    // std::cout << "Rank of AT*A: " << rank_ATA << '\n' << '\n';
+    // std::cout << "Size of AT*A: " << AT_A.rows() << 'x' << AT_A.cols() << '\n' << '\n';
+    
+    // // Calculate pseudoinverse of AT_A*x = AT*b = 0
+    // Eigen::VectorXd b = Eigen::VectorXd::Zero(9);
+    // // std::cout << "Right hand side: \n" << b << '\n' << '\n';
+    // Eigen::MatrixXd x = svd_ATA.solve(b);
+    // std::cout << "x* =  \n" << x << '\n' << '\n';
 
     return 0;
 }
