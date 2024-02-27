@@ -8,7 +8,7 @@
 class Matcher {
 public:
   // Constructor
-  Matcher(const Eigen::MatrixXd &, const Eigen::MatrixXd &);
+  Matcher(const Eigen::MatrixXd&, const Eigen::MatrixXd&);
 
   // Getter functions
   Eigen::MatrixXd set_org() const;
@@ -17,9 +17,10 @@ public:
 
   // Other functions
   void                          print_sets() const;
-  void                          eight_pt();
+  Eigen::Matrix3d               eight_pt();
   Eigen::Matrix3d               normalize_matrix(const Eigen::MatrixXd&) const;
-  void                          calc_A();
+  void                          calc_A(const Eigen::MatrixXd&, const Eigen::MatrixXd&);
+  bool                          check_epipolar(const Eigen::Matrix3d&) const;
 
 private:
   const Eigen::MatrixXd set_org_; // original set of points
