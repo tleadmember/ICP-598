@@ -65,7 +65,7 @@ int main() {
     // Initialize an object of Matcher class
     Matcher matcher{set_original, set_moved};
 
-    matcher.print_sets();
+    matcher.print_raw_sets();
 
     // Calling iterative closest point function
     Eigen::Matrix<double, 3, 3> R = matcher.icp();

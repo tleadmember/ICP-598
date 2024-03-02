@@ -14,14 +14,16 @@ public:
   Eigen::MatrixXd set_mov() const;
 
   // Other functions
-  void print_sets() const;
-  Eigen::Matrix<double, 3, 3>   icp() const;
+  void print_raw_sets() const;
+  Eigen::Matrix<double, 3, 3>   icp();
   Eigen::MatrixXd               nearest_neighbor() const;
   Eigen::Matrix<double, 3, 3>   kabsch_umeyama(const Eigen::MatrixXd&) const;
 
 private:
   const Eigen::MatrixXd set_org_; // original set of points
   const Eigen::MatrixXd set_mov_; // moved set of points
+  Eigen::MatrixXd set_org_centroided_; // original set of points, subtracted by its centroid
+  Eigen::MatrixXd set_mov_centroided_; // moved set of points, subtracted by its centroid
 };
 
 #endif // MATCHER_H

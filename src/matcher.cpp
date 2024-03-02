@@ -5,14 +5,17 @@
 
 // Constructor
 Matcher::Matcher(const Eigen::MatrixXd &set_org, const Eigen::MatrixXd &set_mov)
-    : set_org_{set_org}, set_mov_{set_mov} {}
+    : set_org_{set_org}, 
+      set_mov_{set_mov},
+      set_org_centroided_{Eigen::MatrixXd::Zero(set_org_.rows(), set_org_.cols())},     // initialized for now
+      set_mov_centroided_{Eigen::MatrixXd::Zero(set_org_.rows(), set_org_.cols())} {}   // initialized for now
 
 // Getter functions
 Eigen::MatrixXd Matcher::set_org() const { return set_org_; }
 Eigen::MatrixXd Matcher::set_mov() const { return set_mov_; }
 
 // Other functions
-void Matcher::print_sets() const {
+void Matcher::print_raw_sets() const {
   std::cout << "Matrix of original points: \n" << set_org() << '\n' << '\n';
   std::cout << "Moved matrix: \n" << set_mov() << '\n' << '\n';
 }
@@ -20,13 +23,28 @@ void Matcher::print_sets() const {
 
 /* Function icp() takes in original set of points and moved set of points,
 respectively*/
-Eigen::Matrix<double, 3, 3> Matcher::icp() const {
+Eigen::Matrix<double, 3, 3> Matcher::icp() {
   // Start timing
   auto start = std::chrono::system_clock::now();
 
   // Print out arguments given
   // std::cout << "Original points set: \n" << set_org_ << '\n' << '\n';
   // std::cout << "Moved points set: \n" << set_mov_ << '\n' << '\n';
+
+  // Calculated sets of points subtracted by each set's centroid
+  // double set_org_x_mean = set_org_.row(0).mean();
+  // double set_org_y_mean = set_org_.row(1).mean();
+  // double set_org_z_mean = set_org_.row(2).mean();
+  // double set_mov_x_mean = set_org_.row(0).mean();
+  // double set_mov_y_mean = set_org_.row(1).mean();
+  // double set_mov_z_mean = set_org_.row(2).mean();
+  // Eigen::Vector3d set_org_centroid(set_org_x_mean, set_org_y_mean, set_org_z_mean);
+  // Eigen::Vector3d set_mov_centroid(set_mov_x_mean, set_mov_y_mean, set_mov_z_mean);
+  Eigen::Vector3d set_org_centroid = set_org_.rowwise().mean();
+  set_org_centroided_ = set_org_.colwise() - set_org_centroid;
+  std::cout << "Centroid of original points set: \n" << set_org_centroid << '\n' << '\n';
+  // set_mov_centroided_ = set_mov_.colwise() - set_mov_centroid;
+  std::cout << "Original points set, subtracted by centroid: \n" << set_org_centroided_ << '\n' << '\n';
 
   Eigen::MatrixXd set_mov_reordered = nearest_neighbor();
 
