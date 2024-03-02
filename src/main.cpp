@@ -35,7 +35,7 @@ int main() {
 
     // Set the rotation and translation
     // std::uniform_real_distribution<double> dis2(-179, 179);
-    degrees = 10;
+    degrees = 45;
     std::cout << "Degrees: \n" << degrees << '\n';
     radians = (degrees/180)*3.14159;
     // rot_matrix << cos(radians), -sin(radians), 0,
@@ -43,7 +43,7 @@ int main() {
     //               0, 0, 1;
     rot_matrix = Eigen::AngleAxisd(radians, Eigen::Vector3d::UnitZ()).toRotationMatrix();
 
-    transl_vec << 1, -2, 3;
+    transl_vec << 7, -8, 5;
     std::cout << "Translation: \n" << transl_vec << "\n\n";
 
     // Form the actual transformation matrix
@@ -68,11 +68,13 @@ int main() {
     matcher.print_raw_sets();
 
     // Calling iterative closest point function
-    Eigen::Matrix<double, 3, 3> R = matcher.icp();
-    std::cout << "Calculated rotation matrix: \n" << R << '\n' << '\n';
-    Eigen::Quaterniond quaternion2(R);
+    Eigen::Matrix<double, 4, 4> T_res = matcher.icp();
+    Eigen::Matrix<double, 3, 3> R_res = T_res.block(0, 0, 3, 3);
+    std::cout << "Calculated transformation matrix: \n" << T_res << '\n' << '\n';
+    Eigen::Quaterniond quaternion2(R_res);
     std::cout << "Calculated quaternion of rotation: \n" << quaternion2.coeffs().transpose() << '\n' << '\n';
-    std::cout << "Determinant of rotation transformation: \n" << R.determinant() << '\n' << '\n';
+    std::cout << "Determinant of rotation matrix: \n" << R_res.determinant() << '\n' << '\n';
+    // std::cout << "Calculated translation vector: \n" << T_res.block(0, 3, 3, 1) << '\n' << '\n';
 
     return 0;
 }

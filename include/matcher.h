@@ -15,7 +15,7 @@ public:
 
   // Other functions
   void print_raw_sets() const;
-  Eigen::Matrix<double, 3, 3>   icp();
+  Eigen::Matrix<double, 4, 4>   icp();
   Eigen::MatrixXd               nearest_neighbor() const;
   Eigen::Matrix<double, 3, 3>   kabsch_umeyama(const Eigen::MatrixXd&) const;
 
