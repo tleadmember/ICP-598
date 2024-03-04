@@ -14,10 +14,12 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O3")
 
 include_directories(include/)
 
-add_library(matcher SHARED src/matcher.cpp) # libmatcher.so
+# add_library(matcher SHARED src/matcher.cpp) # libmatcher.so
+add_library(gd SHARED src/gradient_descent.cpp) # libgd.so
 
 # find_library()
 
 add_executable(main src/main.cpp)
 
-target_link_libraries(main matcher)
+# target_link_libraries(main matcher gd)
+target_link_libraries(main gd)
