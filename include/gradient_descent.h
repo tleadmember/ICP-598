@@ -9,13 +9,13 @@ template <typename start_point_T>
 class GradientDescent {
 public:
   // Constructor
-//   GradientDescent(double (*)(start_point_T), start_point_T&);
-  GradientDescent(start_point_T&);
+  GradientDescent(double (*)(start_point_T), start_point_T&);
+
+  // Other functions
   void test_print() const;
 
 private:
   start_point_T start_point_;
-//   double objective_function_(start_point_T);
   std::function<double(start_point_T)> objective_function_;
 };
 

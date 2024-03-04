@@ -17,8 +17,8 @@ int main() {
     start_point << 100, 100;
 
     // Call gradient descent function(s)
-    // GradientDescent<Eigen::Vector2d> gd(&quadratic_objective_function, start_point);
-    GradientDescent<Eigen::Vector2d> gd(start_point);
+    GradientDescent<Eigen::Vector2d> gd(&quadratic_objective_function, start_point);
+    // GradientDescent<Eigen::Vector2d> gd(start_point);
     gd.test_print();
 
     /***********************************************************/
