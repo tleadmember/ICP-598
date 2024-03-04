@@ -1,6 +1,5 @@
 #include "gradient_descent.h"
 #include <iostream>
-#include <vector>
 #include <cmath>
 
 double quadratic_objective_function(Eigen::Vector2d x) {
@@ -13,13 +12,17 @@ double quadratic_objective_function(Eigen::Vector2d x) {
 
 
 int main() {
+    double epsilon = 1e-4;
     Eigen::Vector2d start_point; 
     start_point << 100, 100;
 
+
     // Call gradient descent function(s)
     GradientDescent<Eigen::Vector2d> gd(&quadratic_objective_function, start_point);
-    // GradientDescent<Eigen::Vector2d> gd(start_point);
     gd.test_print();
+    gd.central_difference();
+    gd.numerical_gradient();
+
 
     /***********************************************************/
 

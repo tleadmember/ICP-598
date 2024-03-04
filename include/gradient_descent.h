@@ -13,6 +13,8 @@ public:
 
   // Other functions
   void test_print() const;
+  double central_difference() const;
+  Eigen::Vector3d numerical_gradient() const;
 
 private:
   start_point_T start_point_;
