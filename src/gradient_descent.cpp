@@ -156,5 +156,5 @@ void GradientDescent<start_point_T>::calculate() {
 
 
 // Explicit instantiations
-template class GradientDescent<Eigen::Vector2d>;
-template class GradientDescent<Eigen::MatrixXd>;
+// template class GradientDescent<Eigen::Vector2d>;
+template class GradientDescent<Eigen::VectorXd>;
