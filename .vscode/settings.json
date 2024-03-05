@@ -59,6 +59,15 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "geometry": "cpp",
-        "*.tpp": "c"
+        "*.tpp": "c",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "unordered_set": "cpp",
+        "optional": "cpp",
+        "mutex": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp"
     }
 }

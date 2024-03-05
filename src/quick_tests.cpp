@@ -10,13 +10,14 @@ int main()
 
        Eigen::Vector3f v(1, 1, 1);
 
-       Eigen::MatrixXf res = mat.colwise() - v;
+       auto temp1 = mat(0,0);
+       auto temp2 = mat.size();
 
-       res.block(2, 0, 1, 3).setZero();
+       // Eigen::Matrix3f zero_mat = Eigen::Matrix3f::Zero();
+       // zero_mat(2,2) = 1;
 
-       Eigen::Matrix3f zero_mat = Eigen::Matrix3f::Zero();
-       zero_mat(2,2) = 1;
+       std::cout << temp1 << '\n' << '\n';
+       std::cout << temp2 << '\n' << '\n';
 
-       std::cout << res << '\n' << '\n';
-       std::cout << zero_mat << '\n' << '\n';
+       return 0;
 }
