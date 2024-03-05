@@ -15,12 +15,20 @@ int main() {
     double epsilon = 1e-4;
     double step_size = 1;
     double h = 1e-3;
+    double armijo_tau = 0.5;
+    double armijo_c = 0.5;
     Eigen::Vector2d start_point; 
     start_point <<  -100, 
                     -100;
 
     // Call gradient descent function(s)
-    GradientDescent<Eigen::Vector2d> gd(&quadratic_objective_function, start_point, step_size, h, epsilon);
+    GradientDescent<Eigen::Vector2d> gd(&quadratic_objective_function, 
+                                        start_point, 
+                                        step_size, 
+                                        h, 
+                                        epsilon,
+                                        armijo_tau,
+                                        armijo_c);
     gd.test_print();
     gd.calculate();
 

@@ -3,21 +3,19 @@
 
 int main()
 {
-       Eigen::MatrixXf mat(3,3);
-       mat << 1, 4, 7,
-              2, 5, 8,
-              3, 6, 9;
+       Eigen::MatrixXd A(1,3);
+       A << 1, 2, 3;
+       Eigen::MatrixXd B(3,1);
+       B << 1, 
+            2, 
+            3;
 
-       Eigen::Vector3f v(1, 1, 1);
+       auto res = A*B;
+       // std::cout << res << '\n' << '\n';
+       std::cout << res.size() << '\n' << '\n';
 
-       auto temp1 = mat(0,0);
-       auto temp2 = mat.size();
-
-       // Eigen::Matrix3f zero_mat = Eigen::Matrix3f::Zero();
-       // zero_mat(2,2) = 1;
-
-       std::cout << temp1 << '\n' << '\n';
-       std::cout << temp2 << '\n' << '\n';
+       double number = res(0,0);
+       std::cout << number << '\n' << '\n';
 
        return 0;
 }
