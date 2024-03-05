@@ -72,20 +72,12 @@ Eigen::MatrixXd GradientDescent<start_point_T>::numerical_gradient() const {
     // std::cout << "Hello from numerical_gradient():\n" << nabla << '\n' << '\n';
     Eigen::MatrixXd nabla(1,num_elms_); // gradient "vector", horizontal format
 
-    if (start_point_.rows() == 2) {
-        // std::cout << "Got vector start point!\n\n";
-        for (auto i = 0; i < num_elms_; i++) {
+    for (auto i = 0; i < num_elms_; i++) {
             start_point_T temp_start_point1 = start_point_;
             start_point_T temp_start_point2 = start_point_;
             temp_start_point1(i,0) = temp_start_point1(i,0) + h_;
             temp_start_point2(i,0) = temp_start_point2(i,0) - h_;
             nabla(0,i) = ( objective_function_(temp_start_point1) - objective_function_(temp_start_point2) ) / ( 2*h_ ); // central difference
-        }
-    } else if (start_point_.rows() > 2) {
-        std::cout << "Got matrix start point!\n\n";
-    } else {
-        std::cout << "ERROR: Start point has either 0 columns or negative columns!\n\n";
-        return nabla;
     }
 
     // std::cout << "Hello again from numerical_gradient():\n" << nabla << '\n' << '\n';
@@ -111,7 +103,7 @@ void GradientDescent<start_point_T>::backtracking_line_search(Eigen::MatrixXd& n
     double armijo_t = -armijo_c_ * armijo_m_num;
 
     while (current_f - new_f < step_size_*armijo_t) { // while not good, update step_size_ and recalculate next_point_
-        step_size_ = armijo_tau_*step_size_; // reduce step size
+        step_size_ = armijo_tau_*step_size_; // reduce step_size_
         std::cout << "Updated step_size_: " << step_size_ << '\n' << '\n';
         next_point_ = start_point_ - step_size_ * nabla.transpose();
         new_f = objective_function_(next_point_);
@@ -135,23 +127,14 @@ void GradientDescent<start_point_T>::calculate() {
         nabla = numerical_gradient();
         std::cout << "\nCurrent gradient: " << nabla << '\n' << '\n';
         if (nabla.norm() < epsilon_) break; // check if norm gradient is close enough to 0
-
-        // Update decision variable
-        if (start_point_.rows() == 2) {
-            backtracking_line_search(nabla); // function to update decision variable, check, and backtrack as needed
-        } else if (start_point_.rows() > 2) {
-            std::cout << "Got matrix start point!\n\n";
-        } else {
-            std::cout << "ERROR: Start point has either 0 columns or negative columns!\n\n";
-        }
-
+        backtracking_line_search(nabla); // function to update decision variable, check, and backtrack as needed
         ++count_; // update count of guesses of start_point_
     }
 
     minimum_ = objective_function_(start_point_);
 
     std::cout << "Hello again from calculate(). Convergence reached after ";
-    std::cout << count_ << " guesses!\n" << '\n';
+    std::cout << count_ << " descents!\n" << '\n';
 }
 
 

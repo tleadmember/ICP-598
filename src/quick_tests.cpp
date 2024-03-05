@@ -47,10 +47,11 @@ int main()
      // std::cout << "Squared Frobenius norm =\n" << squared_norm << '\n' << '\n';
 
 
-     Eigen::VectorXd start_point(12); 
-     start_point.setOnes();
-     Eigen::VectorXd v1 = start_point.block(0,0,4,1);
-     std::cout << v1 << '\n';
+     // Eigen::VectorXd start_point(12); 
+     // start_point.setOnes();
+     // Eigen::VectorXd v1 = start_point.block(0,0,4,1);
+     // std::cout << v1 << '\n';
+     
 
      return 0;
 }
