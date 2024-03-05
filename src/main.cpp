@@ -33,135 +33,6 @@ Eigen::VectorXd mat_to_vec(Eigen::MatrixXd& mat) { // turn matrix into vector, c
 }
 
 
-double rot_matrices_objective_function(Eigen::VectorXd x) {
-    Eigen::VectorXd vec_R_w_2 = x.block(0,0,4,1); // extract 4-dim vectors out of x
-    Eigen::VectorXd vec_R_w_3 = x.block(4,0,4,1);
-    Eigen::VectorXd vec_R_w_4 = x.block(8,0,4,1);
-
-    Eigen::MatrixXd R_1_2(2,2), R_2_3(2,2), R_3_4(2,2), R_4_1(2,2), R_2_1(2,2), R_w_1(2,2), 
-                    R_1_3(2,2), R_3_1(2,2), R_3_2(2,2), R_4_2(2,2), R_4_3(2,2), R_1_4(2,2), 
-                    R_2_4(2,2);
-    R_1_2 <<    0.17, -0.98,
-                0.98, 0.17;
-    R_2_3 <<    -0.17, -0.98,
-                0.98, -0.17;
-    R_3_4 <<    0.71, -0.71,
-                0.71, 0.71;
-    R_4_1 <<    -0.71, -0.71,
-                0.71, -0.71;
-    R_1_3 = R_1_2 * R_2_3;
-    R_1_4 = R_4_1.transpose();
-    R_2_1 = R_1_2.transpose();
-    R_2_4 = R_2_3 * R_3_4;
-    R_3_1 = R_3_4 * R_4_1;
-    R_3_2 = R_2_3.transpose();
-    R_4_2 = R_4_1 * R_1_2;
-    R_4_3 = R_3_4.transpose();
-    R_w_1 = Eigen::Matrix2d::Identity(2,2); // given as identity matrix
-
-    Eigen::VectorXd vec_R_w_1 = mat_to_vec(R_w_1); // turn matrix into vector, column-major way
-    // Eigen::VectorXd vec_R_2_1 = mat_to_vec(R_2_1);
-
-    double result = 0; // initialization
-    Eigen::VectorXd temp_v1(4);
-    Eigen::Matrix4d temp_mat;
-    Eigen::VectorXd temp_v2(4);
-    Eigen::VectorXd temp_subtraction(4);
-
-    // 1st squared norm in f(x)
-    temp_v1 =  vec_R_w_1;
-    temp_mat = pack44(vec_R_w_2);
-    temp_v2 = mat_to_vec(R_2_1);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-    // std::cout << temp_v1 << '\n' << '\n';
-    // std::cout << temp_mat << '\n' << '\n';
-    // std::cout << temp_v2 << '\n' << '\n';
-    // std::cout << temp_subtraction << '\n' << '\n';
-    // std::cout << result << '\n' << '\n';
-
-    // 2nd squared norm in f(x)
-    temp_v1 =  vec_R_w_1;
-    temp_mat = pack44(vec_R_w_3);
-    temp_v2 = mat_to_vec(R_3_1);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 3rd squared norm in f(x)
-    temp_v1 =  vec_R_w_1;
-    temp_mat = pack44(vec_R_w_4);
-    temp_v2 = mat_to_vec(R_4_1);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 4th squared norm in f(x)
-    temp_v1 =  vec_R_w_2;
-    temp_mat = pack44(vec_R_w_1);
-    temp_v2 = mat_to_vec(R_1_2);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 5th squared norm in f(x)
-    temp_v1 =  vec_R_w_2;
-    temp_mat = pack44(vec_R_w_3);
-    temp_v2 = mat_to_vec(R_3_2);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 6th squared norm in f(x)
-    temp_v1 =  vec_R_w_2;
-    temp_mat = pack44(vec_R_w_4);
-    temp_v2 = mat_to_vec(R_4_2);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 7th squared norm in f(x)
-    temp_v1 =  vec_R_w_3;
-    temp_mat = pack44(vec_R_w_1);
-    temp_v2 = mat_to_vec(R_1_3);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 8th squared norm in f(x)
-    temp_v1 =  vec_R_w_3;
-    temp_mat = pack44(vec_R_w_2);
-    temp_v2 = mat_to_vec(R_2_3);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 9th squared norm in f(x)
-    temp_v1 =  vec_R_w_3;
-    temp_mat = pack44(vec_R_w_4);
-    temp_v2 = mat_to_vec(R_4_3);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 10th squared norm in f(x)
-    temp_v1 =  vec_R_w_4;
-    temp_mat = pack44(vec_R_w_1);
-    temp_v2 = mat_to_vec(R_1_4);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 11th squared norm in f(x)
-    temp_v1 =  vec_R_w_4;
-    temp_mat = pack44(vec_R_w_2);
-    temp_v2 = mat_to_vec(R_2_4);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-    // 12th squared norm in f(x)
-    temp_v1 =  vec_R_w_4;
-    temp_mat = pack44(vec_R_w_3);
-    temp_v2 = mat_to_vec(R_3_4);
-    temp_subtraction = temp_v1 - temp_mat * temp_v2;
-    result += temp_subtraction.squaredNorm();
-
-
-    return result;
-}
-
-
 Eigen::MatrixXd vec_to_mat(Eigen::VectorXd& vec) { // turn 2d vector to 2x2 matrix, column-major way
     Eigen::MatrixXd mat;
 
@@ -174,6 +45,158 @@ Eigen::MatrixXd vec_to_mat(Eigen::VectorXd& vec) { // turn 2d vector to 2x2 matr
     }
            
     return mat;
+}
+
+
+double rot_matrices_objective_function(Eigen::VectorXd x) {
+    Eigen::VectorXd vec_R_w_2 = x.block(0,0,4,1); // extract 4-dim vectors out of x
+    Eigen::VectorXd vec_R_w_3 = x.block(4,0,4,1);
+    Eigen::VectorXd vec_R_w_4 = x.block(8,0,4,1);
+    Eigen::MatrixXd R_w_2 = vec_to_mat(vec_R_w_2);
+    Eigen::MatrixXd R_w_3 = vec_to_mat(vec_R_w_3);
+    Eigen::MatrixXd R_w_4 = vec_to_mat(vec_R_w_4);
+
+    Eigen::MatrixXd R_1_2(2,2), R_2_3(2,2), R_3_4(2,2), R_4_1(2,2);
+
+    // Eigen::MatrixXd R_1_2(2,2), R_2_3(2,2), R_3_4(2,2), R_4_1(2,2), R_2_1(2,2), R_w_1(2,2), 
+    //                 R_1_3(2,2), R_3_1(2,2), R_3_2(2,2), R_4_2(2,2), R_4_3(2,2), R_1_4(2,2), 
+    //                 R_2_4(2,2);
+    R_1_2 <<    0.17, -0.98,
+                0.98, 0.17;
+    R_2_3 <<    -0.17, -0.98,
+                0.98, -0.17;
+    R_3_4 <<    0.71, -0.71,
+                0.71, 0.71;
+    R_4_1 <<    -0.71, -0.71,
+                0.71, -0.71;
+    // R_1_3 = R_1_2 * R_2_3;
+    // R_1_4 = R_4_1.inverse();
+    // R_2_1 = R_1_2.inverse();
+    // R_2_4 = R_2_3 * R_3_4;
+    // R_3_1 = R_3_4 * R_4_1;
+    // R_3_2 = R_2_3.inverse();
+    // R_4_2 = R_4_1 * R_1_2;
+    // R_4_3 = R_3_4.inverse();
+    // R_w_1 = Eigen::Matrix2d::Identity(2,2); // given as identity matrix
+
+    // Eigen::VectorXd vec_R_w_1 = mat_to_vec(R_w_1); // turn matrix into vector, column-major way
+    // // Eigen::VectorXd vec_R_2_1 = mat_to_vec(R_2_1);
+
+    // double result = 0; // initialization
+    // Eigen::VectorXd temp_v1(4);
+    // Eigen::Matrix4d temp_mat;
+    // Eigen::VectorXd temp_v2(4);
+    // Eigen::VectorXd temp_subtraction(4);
+
+    // // 1st squared norm in f(x)
+    // temp_v1 =  vec_R_w_1;
+    // temp_mat = pack44(vec_R_w_2);
+    // temp_v2 = mat_to_vec(R_2_1);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+    // // std::cout << temp_v1 << '\n' << '\n';
+    // // std::cout << temp_mat << '\n' << '\n';
+    // // std::cout << temp_v2 << '\n' << '\n';
+    // // std::cout << temp_subtraction << '\n' << '\n';
+    // // std::cout << result << '\n' << '\n';
+
+    // // 2nd squared norm in f(x)
+    // temp_v1 =  vec_R_w_1;
+    // temp_mat = pack44(vec_R_w_3);
+    // temp_v2 = mat_to_vec(R_3_1);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 3rd squared norm in f(x)
+    // temp_v1 =  vec_R_w_1;
+    // temp_mat = pack44(vec_R_w_4);
+    // temp_v2 = mat_to_vec(R_4_1);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 4th squared norm in f(x)
+    // temp_v1 =  vec_R_w_2;
+    // temp_mat = pack44(vec_R_w_1);
+    // temp_v2 = mat_to_vec(R_1_2);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 5th squared norm in f(x)
+    // temp_v1 =  vec_R_w_2;
+    // temp_mat = pack44(vec_R_w_3);
+    // temp_v2 = mat_to_vec(R_3_2);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 6th squared norm in f(x)
+    // temp_v1 =  vec_R_w_2;
+    // temp_mat = pack44(vec_R_w_4);
+    // temp_v2 = mat_to_vec(R_4_2);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 7th squared norm in f(x)
+    // temp_v1 =  vec_R_w_3;
+    // temp_mat = pack44(vec_R_w_1);
+    // temp_v2 = mat_to_vec(R_1_3);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 8th squared norm in f(x)
+    // temp_v1 =  vec_R_w_3;
+    // temp_mat = pack44(vec_R_w_2);
+    // temp_v2 = mat_to_vec(R_2_3);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 9th squared norm in f(x)
+    // temp_v1 =  vec_R_w_3;
+    // temp_mat = pack44(vec_R_w_4);
+    // temp_v2 = mat_to_vec(R_4_3);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 10th squared norm in f(x)
+    // temp_v1 =  vec_R_w_4;
+    // temp_mat = pack44(vec_R_w_1);
+    // temp_v2 = mat_to_vec(R_1_4);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 11th squared norm in f(x)
+    // temp_v1 =  vec_R_w_4;
+    // temp_mat = pack44(vec_R_w_2);
+    // temp_v2 = mat_to_vec(R_2_4);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    // // 12th squared norm in f(x)
+    // temp_v1 =  vec_R_w_4;
+    // temp_mat = pack44(vec_R_w_3);
+    // temp_v2 = mat_to_vec(R_3_4);
+    // temp_subtraction = temp_v1 - temp_mat * temp_v2;
+    // result += temp_subtraction.squaredNorm();
+
+    Eigen::Matrix2d R_w_1 = Eigen::Matrix2d::Identity();
+
+    Eigen::Matrix2d R_2_1 = R_1_2.inverse();
+    Eigen::Matrix2d R_3_2 = R_2_3.inverse();
+    Eigen::Matrix2d R_4_3 = R_3_4.inverse();
+    Eigen::Matrix2d R_1_4 = R_4_1.inverse();
+
+    Eigen::Matrix2d R_1_3 = R_1_2 * R_2_3;
+    Eigen::Matrix2d R_2_4 = R_2_3 * R_3_4;
+    Eigen::Matrix2d R_3_1 = R_3_2 * R_2_1;
+    // Eigen::Matrix2d R_4_1 = R_4_3 * R_3_2 * R_2_1;
+    Eigen::Matrix2d R_4_2 = R_4_3 * R_3_2;
+
+
+    auto result = ( R_w_1 - R_w_2 * R_2_1 ).squaredNorm() + ( R_w_1 - R_w_3 * R_3_1 ).squaredNorm() + ( R_w_1 - R_w_4 * R_4_1 ).squaredNorm() +  //
+                ( R_w_2 - R_w_1 * R_1_2 ).squaredNorm() + ( R_w_2 - R_w_3 * R_3_2 ).squaredNorm() + ( R_w_2 - R_w_4 * R_4_2 ).squaredNorm() +  //
+                ( R_w_3 - R_w_1 * R_1_3 ).squaredNorm() + ( R_w_3 - R_w_2 * R_2_3 ).squaredNorm() + ( R_w_3 - R_w_4 * R_4_3 ).squaredNorm() +  //
+                ( R_w_4 - R_w_1 * R_1_4 ).squaredNorm() + ( R_w_4 - R_w_2 * R_2_4 ).squaredNorm() + ( R_w_4 - R_w_3 * R_3_4 ).squaredNorm();
+
+    return result;
 }
 
 
@@ -249,20 +272,22 @@ int main() {
     Eigen::VectorXd vec_R_w_4 = gd.arg_min().block(8,0,4,1);
 
     Eigen::MatrixXd R_w_2_raw = vec_to_mat(vec_R_w_2);
-    // std::cout << R_w_2_raw << '\n' << '\n';
     Eigen::MatrixXd R_w_3_raw = vec_to_mat(vec_R_w_3);
     Eigen::MatrixXd R_w_4_raw = vec_to_mat(vec_R_w_4);
+    std::cout << "R_w_2_raw =\n" << R_w_2_raw << '\n' << '\n';
+    std::cout << "R_w_3_raw =\n" << R_w_3_raw << '\n' << '\n';
+    std::cout << "R_w_4_raw =\n" << R_w_4_raw << '\n' << '\n';
 
     Eigen::MatrixXd R_w_2_processed = project_SO2(R_w_2_raw);
-    std::cout << R_w_2_processed << '\n' << '\n';
+    std::cout << "R_w_2_processed =\n" << R_w_2_processed << '\n';
     std::cout << "Determinant = " << R_w_2_processed.determinant() << '\n' << '\n';
 
     Eigen::MatrixXd R_w_3_processed = project_SO2(R_w_3_raw);
-    std::cout << R_w_3_processed << '\n' << '\n';
+    std::cout << "R_w_3_processed =\n" << R_w_3_processed << '\n';
     std::cout << "Determinant = " << R_w_3_processed.determinant() << '\n' << '\n';
 
     Eigen::MatrixXd R_w_4_processed = project_SO2(R_w_4_raw);
-    std::cout << R_w_4_processed << '\n' << '\n';
+    std::cout << "R_w_4_processed =\n" << R_w_4_processed << '\n';
     std::cout << "Determinant = " << R_w_4_processed.determinant() << '\n' << '\n';
 
     start_point.block(0,0,4,1) = mat_to_vec(R_w_2_processed);
